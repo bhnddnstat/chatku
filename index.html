@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChatGPT Style Conversation</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/marked/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.5/purify.min.js"></script>
+  <script type="module" src="app.js"></script>
+  <script src="https://unpkg.com/marked/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.5/purify.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <div class="new-chat">
+        <button id="newChatBtn">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          New chat
+        </button>
+      </div>
+      <div class="chat-history" id="chatHistory"></div>
+    </aside>
+
+    <main class="chat-container">
+      <div class="chat-messages" id="chatMessages"></div>
+
+      <div class="input-area">
+        <form id="messageForm">
+          <div class="input-container">
+            <textarea
+              id="userInput"
+              rows="1"
+              placeholder="Send a message..."
+              autofocus
+            ></textarea>
+            <button type="submit">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22 2L11 13M22 2L15 22L11 13M11 13L2 9L22 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
