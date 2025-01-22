@@ -68,42 +68,46 @@ class Chat {
     }
   
     async getAIResponse(userMessage) {
-      // Show typing indicator
-      const typingMessage = { role: 'ai', content: 'Typing...', isTyping: true };
-      this.renderMessage(typingMessage);
-  
-      try {
-        const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer sk-079cabacd5d84d5d80fdc1f919fd2661`, // Ganti dengan API key Anda
-          },
-          body: JSON.stringify({
-            model: 'deepseek-chat', // Model yang digunakan
-            messages: [
-              { role: 'user', content: userMessage }, // Pesan dari pengguna
-            ],
-            max_tokens: 150, // Batasan token untuk respons
-          }),
-        });
-  
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+        // Show typing indicator
+        const typingMessage = { role: 'ai', content: 'Typing...', isTyping: true };
+        this.renderMessage(typingMessage);
+      
+        try {
+          const response = await fetch('https://api.deepseek.com/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer sk-079cabacd5d84d5d80fdc1f919fd2661`, // Ganti dengan API key DeepSeek Anda
+            },
+            body: JSON.stringify({
+              model: 'deepseek-chat', // Model yang digunakan
+              messages: [
+                { role: 'system', content: 'You are a helpful assistant.' }, // Pesan sistem
+                { role: 'user', content: userMessage }, // Pesan dari pengguna
+              ],
+              stream: false, // Non-streaming response
+            }),
+          });
+      
+          if (!response.ok) {
+            const errorData = await response.json(); // Ambil detail error dari respons
+            console.error('Error Details:', errorData);
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+      
+          const data = await response.json();
+          console.log('API Response:', data); // Log respons dari API
+      
+          // Remove typing indicator and add actual response
+          this.chatMessages.lastElementChild.remove();
+          this.addMessage('ai', data.choices[0].message.content); // Ambil konten respons dari API
+        } catch (error) {
+          console.error('Error:', error);
+          // Remove typing indicator and add error message
+          this.chatMessages.lastElementChild.remove();
+          this.addMessage('ai', `Sorry, I encountered an error: ${error.message}. Please try again.`);
         }
-  
-        const data = await response.json();
-  
-        // Remove typing indicator and add actual response
-        this.chatMessages.lastElementChild.remove();
-        this.addMessage('ai', data.choices[0].message.content); // Ambil konten respons dari API
-      } catch (error) {
-        console.error('Error:', error);
-        // Remove typing indicator and add error message
-        this.chatMessages.lastElementChild.remove();
-        this.addMessage('ai', `Sorry, I encountered an error: ${error.message}. Please try again.`);
       }
-    }
   
     renderMessage(message) {
       const messageDiv = document.createElement('div');
@@ -222,38 +226,3 @@ class Chat {
   
   // Initialize the chat application
   new Chat();
-
-  try {
-    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer sk-079cabacd5d84d5d80fdc1f919fd2661`, // Ganti dengan API key Anda
-      },
-      body: JSON.stringify({
-        model: 'deepseek-chat', // Model yang digunakan
-        messages: [
-          { role: 'user', content: userMessage }, // Pesan dari pengguna
-        ],
-        max_tokens: 150, // Batasan token untuk respons
-      }),
-    });
-  
-    if (!response.ok) {
-      const errorData = await response.json(); // Ambil detail error dari respons
-      console.error('Error Details:', errorData);
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-  
-    const data = await response.json();
-    console.log('API Response:', data); // Log respons dari API
-  
-    // Remove typing indicator and add actual response
-    this.chatMessages.lastElementChild.remove();
-    this.addMessage('ai', data.choices[0].message.content); // Ambil konten respons dari API
-  } catch (error) {
-    console.error('Error:', error);
-    // Remove typing indicator and add error message
-    this.chatMessages.lastElementChild.remove();
-    this.addMessage('ai', `Sorry, I encountered an error: ${error.message}. Please try again.`);
-  }
